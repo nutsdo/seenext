@@ -10,44 +10,65 @@ class JdRepository
 {
     const SERVER_URL = 'https://api.jd.com/routerjson';
 
-    protected $appKey;
-
-    protected $appSecret;
-
-    protected $accessToken;
-
     protected $params = [];
 
     protected $client = null;
 
     public function __construct($options = [])
     {
-        $this->params = $options;
+        if (empty($params)) {
 
-        $jdConfig = config('jd');
+            $jdConfig = config('jd');
 
-        $this->appKey = $jdConfig['appKey'];
-        $this->appSecret = $jdConfig['appSecret'];
-        $this->accessToken = $this->params['accessToken'];
+            $this->params['appKey'] = $jdConfig['appKey'];
+            $this->params['appSecret'] = $jdConfig['appSecret'];
+
+        }
+
+        if (!empty($options)) {
+
+            $this->setOptions($options);
+        }
 
         $this->setClient();
+    }
+
+    protected function setOption($key, $value)
+    {
+        $this->params[$key] = $value;
+
+        return $this;
+    }
+
+    protected function setOptions($options = [])
+    {
+        $this->params = array_merge($this->params, $options);
+
+        return $this;
     }
 
     protected function setClient()
     {
         $this->client = new \JdClient();
 
-        $this->client->appKey       = $this->appKey;
+        $this->client->appKey = $this->params['appKey'];
 
-        $this->client->appSecret    = $this->appSecret;
+        $this->client->appSecret = $this->params['appSecret'];
 
-        $this->client->accessToken  = $this->accessToken;
+        $this->client->accessToken = $this->params['appSecret'];
 
-        $this->client->serverUrl    = self::SERVER_URL;
+        $this->client->serverUrl = self::SERVER_URL;
 
-        $this->client->format       = 'json';
+        $this->client->format = 'json';
 
         return $this->client;
+    }
+
+    public function service($class)
+    {
+        $this->service = new $class;
+
+        return $this;
     }
 
     public function getJdGoodsCategories()
@@ -58,9 +79,9 @@ class JdRepository
 
         $grade = isset($this->params['grade']) ? $this->params['grade'] : 0;
 
-        $req->setParentId( $parentId );
+        $req->setParentId($parentId);
 
-        $req->setGrade( $grade );
+        $req->setGrade($grade);
 
         $resp = $this->client->execute($req, $this->client->accessToken);
 
@@ -72,9 +93,9 @@ class JdRepository
         $req = new \UnionSearchQueryCouponGoodsRequest();
 
 //        $req->setSkuIdList( "123,234,345" );
-        $req->setPageIndex( 123 );
-        $req->setPageSize( 123 );
-        $req->setCid3( 123 );
+        $req->setPageIndex(123);
+        $req->setPageSize(123);
+        $req->setCid3(123);
 //        $req->setGoodsKeyword( "jingdong" );
 //        $req->setPriceFrom( 123 );
 //        $req->setPriceTo( 123 );
@@ -87,33 +108,33 @@ class JdRepository
     {
         $req = new \ServiceGoodsQuerySecKillGoodsRequest();
 
-        $req->setSkuIdList( "123,234,345" );
+        $req->setSkuIdList("123,234,345");
 
-        $req->setPageIndex( 123 );
+        $req->setPageIndex(123);
 
-        $req->setPageSize( 123 );
+        $req->setPageSize(123);
 
-        $req->setIsBeginSecKill( 123 );
+        $req->setIsBeginSecKill(123);
 
-        $req->setSecKillPriceFrom( 123 );
+        $req->setSecKillPriceFrom(123);
 
-        $req->setSecKillPriceTo( 123 );
+        $req->setSecKillPriceTo(123);
 
-        $req->setCid1Id( 123 );
+        $req->setCid1Id(123);
 
-        $req->setCid2Id( 123 );
+        $req->setCid2Id(123);
 
-        $req->setCid3Id( 123 );
+        $req->setCid3Id(123);
 
-        $req->setOwner( "jingdong" );
+        $req->setOwner("jingdong");
 
-        $req->setCommissionShareFrom( 123 );
+        $req->setCommissionShareFrom(123);
 
-        $req->setCommissionShareTo( 123 );
+        $req->setCommissionShareTo(123);
 
-        $req->setSortName( "jingdong" );
+        $req->setSortName("jingdong");
 
-        $req->setSort( "jingdong" );
+        $req->setSort("jingdong");
 
         $resp = $this->client->execute($req, $this->client->accessToken);
 
